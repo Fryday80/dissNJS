@@ -51,8 +51,9 @@ let forms = {
                 $(".medics", $form).append(newInput(item.name, item.type, item.label, item.placeholder));
         }
     },
-    additional: function($form){
+    additional: function($form, type){
         $(".additional", $form).append(newInput("email", "email", "E-Mail für Feedback", "eMail"));
+        $(".additional", $form).append($('<input name="submitter" value="' + type + '" hidden>'));
     },
     additionalPlus: function($form){
         $(".additional", $form).prepend(newInput("ref", "text", "Referenznummer", "z.B. Vetera Nummer, EasyVet Nummer"));
@@ -172,7 +173,7 @@ window.getForm = function(type){
     let sections = $('fieldset fieldset', $newForm);
     sections.each(function (index){
         let section = $(sections[index]).attr("class");
-        forms[section]($newForm);
+        forms[section]($newForm, type);
     });
     if(type !== "privat"){
         forms.additionalPlus($newForm);

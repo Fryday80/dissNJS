@@ -12,7 +12,11 @@ const app = express();
 const port = 3000;
 
 const indexPage = __dirname + '/public/index.html';
-
+const csvExportOptions = {
+    includeHeaders: true,
+    rowDelimiter: ';',
+    verticalOutput: false
+};
 let online = new Map();
 
 passport.use(new Strategy(
@@ -79,18 +83,8 @@ app.post('/login', passport.authenticate('local', { failureRedirect: '/login' })
 app.get('/admin', isAuth, function (req, res, next) {
     res.sendFile(path.join(__dirname + '/admin/admin.html'));
 });
-let csvExportOptions = {
-    includeHeaders: true,
-    rowDelimiter: '|',
-    verticalOutput: false
-};
 app.get('/download', isAuth, function (req, res, next) {
-    let data = [
-        {lang: 'zeile 1',module: 'spalte 2'},
-        {lang: 'zeile 2',module: 'spalte 2'},
-        {lang: 'zeile 3',module: 'spalte 2'},
-    ];
-    data = DB.exportAll();
+    let data = DATA.exportAll();
     jsonExport(data, csvExportOptions, function(err, csv){
         if(err) {
             res.json({error: err});
