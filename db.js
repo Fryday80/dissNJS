@@ -4,6 +4,8 @@
 "use strict";
 let Database = require('better-sqlite3');
 let db = new Database('diss.sqlite3', {});
+const ENUM_NAMES = "enum_names";
+const ENUM_DATA = "enum_data";
 const DATA = "data";
 const REFERENCE = "reference";
 let enums = {
@@ -40,6 +42,14 @@ module.exports = {
         return info;
     },
     getEnums() { return enums },
+    getAll(from, to, orderBy) {
+        orderBy = orderBy || "id";
+        return db.prepare('SELECT * FROM data ORDER BY '+orderBy+' LIMIT @from, @to')
+            .all({
+                from: from,
+                to: to
+            });
+    }
 };
 
 function _prepareData(data) {
