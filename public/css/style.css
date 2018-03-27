@@ -1,0 +1,27 @@
+form {
+    margin:5px;
+    background: linear-gradient(forestgreen, lightblue);
+}
+form fieldset.form label {
+    width: 300px;
+    margin: 10px;
+    text-align: right;
+    display: inline-block
+}
+
+div.uaw-title button{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 100px;
+    height: 50px;
+}
+form *:required:invalid, input:focus:invalid {
+    /* insert your own styles for invalid form input */
+    border: 1px solid red;
+    -moz-box-shadow: none;
+}
+div div.radio label {
+    width: 100%;
+    text-align: left;
+}
