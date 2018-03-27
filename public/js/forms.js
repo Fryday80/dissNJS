@@ -3,24 +3,7 @@
  */
 "use strict";
 
-let enums = {
-    yesNo: [
-        "nein",
-        "ja"
-    ],
-    clinics: [
-        "CTK - Chirurgische und Gynäkologische Kleintierklinik",
-        "Klinik für Pferde - Lehrstuhl für Innere Medizin und Chirurgie des Pferdes sowie für Gerichtliche Tiermedizin",
-        "Klinik für Pferde - Lehrstuhl für Innere Medizin und Reproduktion",
-        "Klinik für Schweine",
-        "Klinik für Vögel, Kleinsäuger, Reptilien und Zierfische",
-        "Klinik für Wiederkäuer - Lehrstuhl für Innere Medizin und Chirurgie der Wiederkäuer",
-        "Klinik für Wiederkäuer - Lehrstuhl für Physiologie und Pathologie der Fortpflanzung ",
-        "MTK - Medizinische Kleintierklinik",
-    ],
-    animals: [],
-    drug: [],
-};
+let enums = {};
 let subTexts = {
     clinicsText: "Ihre Klinik",
     animalText: "Tier",
@@ -50,7 +33,7 @@ let forms = {
     },
     animal: function ($form) {
         $(".animal", $form)
-            .append(newInput("animal", "text", "Tierart", "Hund, Katze...", enums.animals))
+            .append(newInput("animal", "text", "Tierart", "Hund, Katze...", enums.animal))
             .append( $('<br>') )
             .append(newInput("weight", "number", "Gewicht", "...").append($("<span> kg *ungefähre Angabe</span>")));
     },
@@ -99,7 +82,7 @@ let create = {
     radio: (name, type, placeholder, options)=>{
         let $div  = $('<div class="radio">');
         for(let i= 0; i < options.length; i++){
-            let $input = $('<input name="' + name + '" type="radio" value="' + options[i] + '">');
+            let $input = $('<input name="' + name + '" type="radio" value="' + i + '">');
             let $label = $('<label>')
                 .text(options[i])
                 .prepend($input)
@@ -134,11 +117,7 @@ let create = {
     },
 };
 let a = $.getJSON( "enums", function( data ) {
-    enums.animals = data.animal;
-    enums.animals = setEnumDefaults(enums.animals, ["Hund", "Katze", "Pferd", "Rind", "Schaf", "Ziege"]);
-    enums.animals.sort(sortAlphabetical);
-    enums.drug = data.drug;
-    enums.drug.sort(sortAlphabetical);
+    enums = data;
 });
 // $.ajax({
 //     dataType: "json",
@@ -214,14 +193,6 @@ function setEnumDefaults(to, defaultArray) {
         }
     }
     return to;
-}
-
-function sortAlphabetical (a,b, sub = false) {
-    if (sub){
-        if ((a.length === 0 && b.length === 0) || b.length === 0) return 1;
-        if (a.length === 0) return -1;
-    }
-    return (a[0] > b[0]) ? 1 : (a[0] < b[0]) ? -1 : sortAlphabetical(a.substr(1), b.substr(1), true);
 }
 
 function newInput (name, type, label, placeholder, options){

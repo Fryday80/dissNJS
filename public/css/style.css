@@ -25,3 +25,12 @@ div div.radio label {
     width: 100%;
     text-align: left;
 }
+.popUpValidation {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    background-color: whitesmoke;
+    top: 0;
+    left: auto;
+    right: auto;
+}

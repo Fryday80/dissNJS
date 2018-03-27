@@ -126,28 +126,10 @@ function getTitle(type) {
 
 function formActions() {
     addBackButton();
-    // $('body').off("click");
-    // $('body').on("click", '[type="submit"]', (e)=> {
-    //
-    //     if(DEV) log("clicked send");
-    //     let data = $("form").serialize();
-    //     if(DEV) log(data);
-    //     e.preventDefault();
-    // });
     $('form').on("submit", e => {
         e.preventDefault();
-        console.log($("form").serialize());
         saveData($("form").serialize());
     });
-    // $('[type="submit"]').on("click", (e)=> {
-    //     e.preventDefault();
-    //     if($('form')[0].checkValidity())
-    //         saveData($("form").serialize());
-    //     else {
-    //         $('<div class="popUpValidation">').appendTo($('body'));
-    //         alert("Bitte füllen Sie alle notwendigen Felder aus");
-    //     }
-    // });
 }
 
 function saveData (data) {
@@ -155,9 +137,8 @@ function saveData (data) {
         dataType: "json",
         url: "write",
         data: data,
-        success: (data) => {
+        success: (saveInfo) => {
             goTo("main");
-        log("saved data");
         }
     });
 }

@@ -12,8 +12,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/write', function (req, res) {
-    DB.writeSomething(req.query);
-    // res.redirect('/');
+    res.json(DB.writeSomething(req.query));
 });
 app.get('/enums', function (req, res) {
     res.json(DB.getEnums() );
