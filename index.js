@@ -5,7 +5,7 @@ const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 const isAuth = require('connect-ensure-login').ensureLoggedIn();
 
-const DB = require('./db');
+const DATA = require('./dataService');
 const app = express();
 const port = 3000;
 
@@ -58,14 +58,14 @@ app.get('/', function (req, res) {
 });
 
 app.get('/write', function (req, res) {
-    res.json(DB.writeSomething(req.query));
+    res.json(DATA.save(req.query));
 });
 app.get('/enums', function (req, res) {
-    res.json(DB.getEnums() );
+    res.json(DATA.getEnums() );
 });
 app.get('/data/:from/:to/:order', isAuth, function (req, res) {
     //@todo need auth
-    res.json(DB.getAll(req.params.from, req.params.to, req.params.order) );
+    res.json(DATA.getAll(req.params.from, req.params.to, req.params.order) );
 });
 
 app.get('/login', function (req, res, next) {

@@ -44,7 +44,7 @@ View("home", function() {
 
 View("list", function() {
     let url = "http://localhost:3000/data/";
-    let orderBy = ['id', 'animal'];
+    let orderBy = ['id', 'animal', 'drug']; //des hier geht übrigents schon solte :)
     let $list, $select, $from, $to, FROM = 0, TO = 100;
 
     this.title = "List";

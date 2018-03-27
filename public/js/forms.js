@@ -63,15 +63,15 @@ let forms = {
 };
 let create = {
     number: (name, type, placeholder, options)=>{
-        return $('<input name="' + name + '" type="number" step="0.5" placeholder="' + placeholder + '" autocapitalize="sentences">');
+        return $('<input name="' + name + '" type="number" step="0.5" placeholder="' + placeholder + '">');
     },
     text: (name, type, placeholder, options)=>{
-        let $input = $('<input name="' + name + '" type="text" placeholder="' + placeholder + '" autocapitalize="sentences">');
+        let $input = $('<input name="' + name + '" type="text" placeholder="' + placeholder + '">');
         if(options){
             let listName = name + "-" + type;
             let $dataList = $('<datalist id="' + listName + '">');
             for (let i = 0; i < options.length; i++){
-                $dataList.append($('<option value="' + options[i] + '">'));
+                $dataList.append($('<option value="' + options[i].charAt(0).toUpperCase() + options[i].slice(1) + '">'));
             }
             $input
                 .attr("list", listName)
@@ -105,7 +105,7 @@ let create = {
         return $input
     },
     textarea: (name, type, placeholder, options)=>{
-        return $('<textarea name="' + name + '" placeholder="' + placeholder + '" autocapitalize="sentences">');
+        return $('<textarea name="' + name + '" placeholder="' + placeholder + '">');
     },
     select: (name, type, placeholder, options)=>{
         let $input = $('<select name="' + name + '" >');
@@ -129,6 +129,7 @@ let a = $.getJSON( "enums", function( data ) {
 //     }
 // });
 a.then(function(){
+    console.log('asdasdsa', enums);
     preset = {
         medics: [
             {
@@ -185,15 +186,6 @@ window.getForm = function(type){
         .empty()
         .append($newForm);
 };
-
-function setEnumDefaults(to, defaultArray) {
-    for (let i = 0; i < defaultArray.length; i++){
-        if(to.indexOf(defaultArray[i]) === -1){
-            to.push(defaultArray[i]);
-        }
-    }
-    return to;
-}
 
 function newInput (name, type, label, placeholder, options){
     let $fragment = $('<div>');
