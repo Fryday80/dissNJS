@@ -1,18 +1,57 @@
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const session = require('express-session');
+
+const passport = require('passport');
+const Strategy = require('passport-local').Strategy;
+const isAuth = require('connect-ensure-login').ensureLoggedIn();
+
 const DB = require('./db');
 const app = express();
 const port = 3000;
 
 const indexPage = __dirname + '/public/index.html';
 
-// app.use(cookieParser());
-// app.use(session({ secret: 'example' }));
-// app.use(bodyParser());
+let online = new Map();
+
+passport.use(new Strategy(
+    function(username, password, cb) {
+        if (username === "user" && password === "pass") {
+            return cb(null, {
+                id: Math.round(Math.random() * 999999).toString(16),
+                username:username,
+                password:password
+            });
+        }
+        // db.users.findByUsername(username, function(err, user) {
+        //     if (err) { return cb(err); }
+        //     if (!user) { return cb(null, false); }
+        //     if (user.password != password) { return cb(null, false); }
+        //     return cb(null, user);
+        // });
+    })
+);
+passport.serializeUser(function(user, cb) {
+    online.set(user.id, user);
+    cb(null, user.id);
+});
+
+passport.deserializeUser(function(id, cb) {
+    let user = online.get(id);
+    cb(null, user);
+});
+
+
 app.use(express.static('public'));
+app.use(require('cookie-parser')());
+app.use(require('body-parser').urlencoded({ extended: true }));
+app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+
+// Initialize Passport and restore authentication state, if any, from the
+// session.
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 
 app.get('/', function (req, res) {
     res.sendFile(indexPage);
@@ -24,47 +63,25 @@ app.get('/write', function (req, res) {
 app.get('/enums', function (req, res) {
     res.json(DB.getEnums() );
 });
-app.get('/data/:from/:to/:order', function (req, res) {
+app.get('/data/:from/:to/:order', isAuth, function (req, res) {
     //@todo need auth
     res.json(DB.getAll(req.params.from, req.params.to, req.params.order) );
 });
 
 app.get('/login', function (req, res, next) {
-    // res.render('login', { flash: req.flash() } );
     res.sendFile(path.join(__dirname + '/public/login.html'));
 });
-app.post('/login', function (req, res, next) {
-    // you might like to do a database look-up or something more scalable here
-    if (req.body.username && req.body.username === 'user' && req.body.password && req.body.password === 'pass') {
-        req.session.authenticated = true;
-        res.redirect('/admin');
-    } else {
-        req.flash('error', 'Username and password are incorrect');
-        res.redirect('/login');
-    }
-
+app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), function (req, res, next) {
+    res.redirect('/admin');
 });
-app.get('/admin', function (req, res, next) {
+app.get('/admin', isAuth, function (req, res, next) {
     res.sendFile(path.join(__dirname + '/admin/admin.html'));
 });
 
 app.get('/logout', function (req, res, next) {
-    delete req.session.authenticated;
+    req.logout();
     res.redirect('/');
 });
 app.listen(port, function () {
     console.log("listen on port %s", port);
 });
-
-function checkAuth (req, res, next) {
-    console.log('checkAuth ' + req.url);
-
-    // don't serve /secure to those not logged in
-    // you should add to this list, for each and every secure url
-    if (req.url === '/secure' && (!req.session || !req.session.authenticated)) {
-        // res.render('unauthorised', { status: 403 });
-        res.send("unauthorised!");
-        return;
-    }
-    next();
-}

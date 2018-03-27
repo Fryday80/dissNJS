@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <form>
+    <form action="/login" method="post">
         <label for="username">Name</label>
-        <input id="username" type="text">
+        <input id="username" type="text" name="username">
         <label for="password">Password</label>
-        <input id="password" type="password">
+        <input id="password" type="password" name="password">
+        <input type="submit" value="Send">
     </form>
 </body>
 </html>
