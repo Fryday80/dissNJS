@@ -98,3 +98,10 @@ View("list", function() {
         $list.append(F);
     }
 });
+
+View("download", function() {
+    this.title = "Download";
+    this.render = (parent) => {
+        parent[0].innerHTML = `<a href="/download"><h3>Download database</h3></a>`;
+    }
+});
