@@ -134,15 +134,20 @@ function formActions() {
     //     if(DEV) log(data);
     //     e.preventDefault();
     // });
-    $('[type="submit"]').on("click", (e)=> {
+    $('form').on("submit", e => {
         e.preventDefault();
-        if($('form')[0].checkValidity())
-            saveData($("form").serialize());
-        else {
-            $('<div class="popUpValidation">').appendTo($('body'));
-            alert("Bitte füllen Sie alle notwendigen Felder aus");
-        }
+        console.log($("form").serialize());
+        saveData($("form").serialize());
     });
+    // $('[type="submit"]').on("click", (e)=> {
+    //     e.preventDefault();
+    //     if($('form')[0].checkValidity())
+    //         saveData($("form").serialize());
+    //     else {
+    //         $('<div class="popUpValidation">').appendTo($('body'));
+    //         alert("Bitte füllen Sie alle notwendigen Felder aus");
+    //     }
+    // });
 }
 
 function saveData (data) {
