@@ -4,10 +4,8 @@
 "use strict";
 
 let enums = {};
+let preset = {};
 let subTexts = {
-    clinicsText: "Ihre Klinik",
-    animalText: "Tier",
-    medicsText: "Medikament",
     lmu: {
         formText: "Meldebogen für Einrichtungen der Tiermedizinischen Fakultät",
         lastText: "Referenzdaten"
@@ -26,10 +24,9 @@ let formAttribs = {
     method:"GET",
     id:"form_uaw"
 };
-let preset = {};
 let forms = {
     clinics: function ($form) {
-        $(".clinics", $form).append(newInput("clinic", "radio", subTexts.clinicsText, "", enums.clinics));
+        $(".clinics", $form).append(newInput("clinic", "radio", "Ihre Klinik", "", enums.clinics));
     },
     animal: function ($form) {
         $(".animal", $form)
@@ -84,7 +81,7 @@ let create = {
         let $div  = $('<div class="radio">');
         for(let i= 0; i < options.length; i++){
             let $input = $('<input name="' + name + '" type="radio" value="' + i + '">');
-            let $label = $('<label>')
+            $('<label>')
                 .text(options[i])
                 .prepend($input)
                 .appendTo($div);
@@ -120,60 +117,33 @@ let create = {
 let a = $.getJSON( "enums", function( data ) {
     enums = data;
 });
-// $.ajax({
-//     dataType: "json",
-//     url: "enums",
-//     // data: data,
-//     success: (data) => {
-//
-//     console.log("get JSON", data );
-//     }
-// });
 a.then(function(){
-    console.log('asdasdsa', enums);
     preset = {
         medics: [
-            {
-                label: "Indikation",
-                name: "reason",
-                placeholder: "Indikation...",
-                type: "text"
-            },
-            {
-                label: "Medikamentenname",
-                name: "drug",
-                placeholder: "Medikamentenname...",
-                type: "text",
-                options: enums.drug,
-            },
-            {
-                label: "Dosierung",
-                name: "dose",
-                placeholder: "z.B. 1 1/2 Tabletten, 3ml ...",
-                type: "text"
-            },
-            {
-                label: "Häufigkeit der Verabreichung",
-                name: "frequency",
-                placeholder: "z.B. 2x täglich",
-                type: "text"
-            },
-            {
-                label: "Beobachtung / unerwünschte Wirkung",
-                name: "problem",
-                placeholder: "Rötungen a.d. Pfoten, Erbrechen...",
-                type: "textarea"
-            },
+            newPreset("Indikation", "reason", "Indikation...", "text"),
+            newPreset("Medikamentenname", "drug", "Medikamentenname...", "text", enums.drug),
+            newPreset("Dosierung", "dose", "z.B. 1 1/2 Tabletten, 3ml ...", "text"),
+            newPreset("Häufigkeit der Verabreichung", "frequency", "z.B. 2x täglich", "text"),
+            newPreset("Beobachtung / unerwünschte Wirkung", "problem", "Rötungen a.d. Pfoten, Erbrechen...", "textarea"),
         ],
     };
 });
+function newPreset (label, name, placeholder, type, options){
+    let a = {
+        label: label,
+        name: name,
+        placeholder: placeholder,
+        type: type
+    };
+    if(options) a.options = options;
+    return a;
+}
 
 window.getForm = function(type){
     let $newForm = newForm(type);
     let sections = $('fieldset fieldset', $newForm);
     sections.each(function (index){
-        let section = $(sections[index]).attr("class");
-        forms[section]($newForm, type);
+        forms[ $(sections[index]).attr("class") ]($newForm, type);
     });
     if(type !== "privat"){
         forms.additionalPlus($newForm);
@@ -189,17 +159,12 @@ window.getForm = function(type){
 };
 
 function newInput (name, type, label, placeholder, options){
-    let $fragment = $('<div>');
-    if(type === "radio"){
-        return $fragment.append(create[type](name, type, placeholder, options));
-    } else {
-        let $label = $('<label>')
-            .attr("for", name)
-            .html(label);
-        return $fragment
-            .append($label)
-            .append(create[type](name, type, placeholder, options));
-    }
+    let $fragment = $('<div>')
+        .append(create[type](name, type, placeholder, options));
+    let $label = $('<label>')
+        .attr("for", name)
+        .html(label);
+    return (type === "radio") ? $fragment : $fragment.prepend($label);
 }
 
 function newFieldset (legendText, additionalClass = null){
@@ -216,32 +181,23 @@ function newForm (type) {
     let $newForm = $('<form>')
         .append(newFieldset(subTexts[type].formText, "form"));
     for (let attrib in formAttribs){
-        if (formAttribs.hasOwnProperty(attrib)){
-            $($newForm).attr(attrib, formAttribs[attrib]);
-        }
+        $($newForm).attr(attrib, formAttribs[attrib]);
     }
 
-    if(type === "lmu"){
-        $('fieldset', $newForm)
-            .append( newFieldset(subTexts.clinicsText, "clinics") );
-    }
+    if(type === "lmu")
+        $('fieldset', $newForm).append( newFieldset("Ihre Klinik", "clinics") );
 
     $('fieldset.form', $newForm)
-        .append( newFieldset(subTexts.animalText, "animal") )
-        .append( newFieldset(subTexts.medicsText, "medics") )
-        .append( newFieldset(subTexts[type].lastText, "additional") )
-    ;
+        .append( newFieldset("Tierdaten", "animal") )
+        .append( newFieldset("Medikamentendaten", "medics") )
+        .append( newFieldset(subTexts[type].lastText, "additional") );
 
     forms.sendButton($('fieldset.form', $newForm));
-
     return $newForm;
 }
 
 function setRequired(type, form) {
     let $items = $( [].concat($('input', form).toArray(), $('textarea', form).toArray(), $('select', form).toArray()) );
-    if (type !== "lmu"){
-        $items = $items.not('.additional');
-    }
-    $items = $items.not('#send');
+    $items = (type !== "lmu") ? $items = $items.not('.additional').not('#send') : $items.not('#send');
     $items.attr("required", '');
 }

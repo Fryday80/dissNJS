@@ -39,7 +39,7 @@ let titles = {
         privat: ""
     },
     bottom: {
-        start: "Eine Weitergabe der persönlichen Daten findet nicht statt. Sie werden jedoch zu Feedbackzwecken gespeichert! (optionale Angaben)",
+        start: "Eine Weitergabe der persönlichen Daten findet nicht statt. Sie werden jedoch - ausschließlich - zu Feedbackzwecken gespeichert! (optionale Angaben)",
         lmu: "Die hier eingetragenen Daten unterliegen dem Datenschutz und werden von uns nur für eine Korrespondenz zwischen uns und dem Meldenden genutzt. <br><br> "+
         "Eine arzneimittelrechtliche Bewertung findet nicht statt. Die Weitergabe der an Dritte ist ausgeschlossen.  <br>" +
         "Die ausgewerteten Meldungen können den Kliniken in anonymisierter Form zur Verfügung gestellt werden.<br>",
