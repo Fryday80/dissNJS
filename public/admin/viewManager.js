@@ -51,13 +51,24 @@ View("list", function() {
 
     this.render = ($parent) => {
         let $listHead = $('<div></div>');
+        let $selectLabel = $('<label></label>');
+        $selectLabel[0].innerText = "Order By:";
+        $selectLabel.appendTo($listHead);
         $select = $('<select></select>');
         for (let order of orderBy) $select.append(`<option value="${order}">${order}</option>`);
-        $select.appendTo($listHead);
+        $select.appendTo($selectLabel);
+
+        let $fromLabel = $('<label></label>');
+        $fromLabel[0].innerText = "From:";
+        $fromLabel.appendTo($listHead);
         $from = $(`<input type="number" class="from" value="${FROM}">`);
-        $from.appendTo($listHead);
+        $from.appendTo($fromLabel);
+
+        let $toLabel = $('<label></label>');
+        $toLabel[0].innerText = "To:";
+        $toLabel.appendTo($listHead);
         $to = $(`<input type="number" class="to" value="${TO}">`);
-        $to.appendTo($listHead);
+        $to.appendTo($toLabel);
         let $loadButton = $(`<button>Load</button>`);
         $loadButton.click(load);
         $loadButton.appendTo($listHead);
