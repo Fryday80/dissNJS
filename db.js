@@ -47,6 +47,10 @@ module.exports = {
                 from: from,
                 to: to
             });
+    },
+    exportAll() {
+        return db.prepare('SELECT * FROM data').all();
+
     }
 };
 
