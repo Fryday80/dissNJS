@@ -112,7 +112,32 @@ View("list", function() {
 
 View("download", function() {
     this.title = "Download";
-    this.render = (parent) => {
-        parent[0].innerHTML = `<a href="/download"><h3>Download database</h3></a>`;
+    this.render = ($parent) => {
+
+        $parent.html(`<div>
+            <label>
+                begin from id:
+                <input class="start-id" type="number" value="0" min="0">
+            </label>
+            <button class="download">Download</button>
+            <button class="download-all">Download All</button>
+        </div>`);
+        let $startID = $(".start-id", $parent);
+        $("button.download", $parent).click(e => {
+            console.log("download");
+            download("/download/" + $startID.val() + "/data.csv");
+        });
+        $("button.download-all", $parent).click(e => {
+            console.log("download all");
+            download("/download/-1/data.csv");
+        });
+    }
+    function download(path) {
+        let a = document.createElement('A');
+        a.href = path;
+        a.download = path.substr(path.lastIndexOf('/') + 1);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     }
 });

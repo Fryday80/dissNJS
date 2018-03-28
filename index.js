@@ -83,8 +83,8 @@ app.post('/login', passport.authenticate('local', { failureRedirect: '/login' })
 app.get('/admin', isAuth, function (req, res, next) {
     res.sendFile(path.join(__dirname + '/admin/admin.html'));
 });
-app.get('/download', isAuth, function (req, res, next) {
-    let data = DATA.exportAll();
+app.get('/download/:startId/*', isAuth, function (req, res, next) {
+    let data = DATA.exportAll(req.params.startId);
     jsonExport(data, csvExportOptions, function(err, csv){
         if(err) {
             res.json({error: err});
