@@ -44,9 +44,10 @@ function _getAll(from, to, orderBy){
 }
 
 function _exportAll (startID) {
-    // mark records loaded:
+    let a = db.prepare('SELECT * FROM data WHERE id > @startID ORDER BY id;').all({ startID: startID-1 });
+    // mark records loaded after downloading:
     db.prepare('UPDATE data SET loaded = 1 WHERE id > @startID;').run({ startID: startID-1 });
-    return db.prepare('SELECT * FROM data WHERE id > @startID ORDER BY id').all({ startID: startID-1 });
+    return a;
 }
 
 function loadDistinctValuesFrom(columnName) {
