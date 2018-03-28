@@ -157,8 +157,7 @@ window.getForm = function(type){
 };
 
 function newInput (name, type, label, placeholder, options){
-    let $fragment = $('<div>')
-        .append(create[type](name, type, placeholder, options));
+    let $fragment = $('<div>').append(create[type](name, type, placeholder, options));
     let $label = $('<label>')
         .attr("for", name)
         .html(label);
@@ -166,11 +165,9 @@ function newInput (name, type, label, placeholder, options){
 }
 
 function newFieldset (legendText, additionalClass = null){
-    let $fieldset = $('<fieldset>')
-        .append( $('<legend>') );
+    let $fieldset = $('<fieldset>').append( $('<legend>') );
     if (additionalClass !== null) $fieldset.addClass(additionalClass);
-    $('<h3>')
-        .html(legendText)
+    $('<h3>').html(legendText)
         .appendTo( $('legend', $fieldset) );
     return $fieldset;
 }
@@ -181,10 +178,8 @@ function newForm (type) {
     for (let attrib in formAttribs){
         $($newForm).attr(attrib, formAttribs[attrib]);
     }
-
     if(type === "lmu")
         $('fieldset', $newForm).append( newFieldset("Ihre Klinik", "clinics") );
-
     $('fieldset.form', $newForm)
         .append( newFieldset("Tierdaten", "animal") )
         .append( newFieldset("Medikamentendaten", "medics") )

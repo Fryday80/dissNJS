@@ -6,25 +6,9 @@ let Database = require('better-sqlite3');
 let db = new Database('diss.sqlite3', {});
 const DATA = "data";
 const REFERENCE = "reference";
-let enums = {
-    yesNo: [
-        "nein",
-        "ja"
-    ],
-    clinics: [
-        "CTK - Chirurgische und Gynäkologische Kleintierklinik",
-        "Klinik für Pferde - Lehrstuhl für Innere Medizin und Chirurgie des Pferdes sowie für Gerichtliche Tiermedizin",
-        "Klinik für Pferde - Lehrstuhl für Innere Medizin und Reproduktion",
-        "Klinik für Schweine",
-        "Klinik für Vögel, Kleinsäuger, Reptilien und Zierfische",
-        "Klinik für Wiederkäuer - Lehrstuhl für Innere Medizin und Chirurgie der Wiederkäuer",
-        "Klinik für Wiederkäuer - Lehrstuhl für Physiologie und Pathologie der Fortpflanzung ",
-        "MTK - Medizinische Kleintierklinik",
-    ],
-};
+let enums = {};
 
 init();
-
 function init() {
     //get animal-enums
     loadDistinctValuesFrom("animal");
@@ -52,15 +36,15 @@ function _writeReference(info, data) {
 
 function _getAll(from, to, orderBy){
     orderBy = orderBy || "id";
-    return db.prepare('SELECT * FROM data ORDER BY '+orderBy+' LIMIT @from, @to')
+    return db.prepare('SELECT * FROM data ORDER BY '+orderBy+' DESC LIMIT @from, @to')
         .all({
             from: from,
             to: to
         });
 }
 
-function _exportAll () {
-    return db.prepare('SELECT * FROM data').all();
+function _exportAll (startID) {
+    return db.prepare('SELECT * FROM data WHERE id > @startID ORDER BY id').all({ startID: startID-1 });
 }
 
 function loadDistinctValuesFrom(columnName) {
