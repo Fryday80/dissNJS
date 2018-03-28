@@ -42,7 +42,7 @@ let forms = {
     medics: function ($form) {
         for (let i = 0; i < preset.medics.length; i++){
             let item = preset.medics[i];
-            if(item.options)
+            if(!!item.options)
                 $(".medics", $form).append(newInput(item.name, item.type, item.label, item.placeholder, item.options));
             else
                 $(".medics", $form).append(newInput(item.name, item.type, item.label, item.placeholder));
@@ -114,29 +114,27 @@ let create = {
         return $input;
     },
 };
-let a = $.getJSON( "enums", function( data ) {
-    enums = data;
-});
-a.then(function(){
-    preset = {
-        medics: [
-            newPreset("Indikation", "reason", "Indikation...", "text"),
-            newPreset("Medikamentenname", "drug", "Medikamentenname...", "text", enums.drug),
-            newPreset("Dosierung", "dose", "z.B. 1 1/2 Tabletten, 3ml ...", "text"),
-            newPreset("Häufigkeit der Verabreichung", "frequency", "z.B. 2x täglich", "text"),
-            newPreset("Beobachtung / unerwünschte Wirkung", "problem", "Rötungen a.d. Pfoten, Erbrechen...", "textarea"),
-        ],
-    };
-});
+$.getJSON( "enums", function(data){
+        enums = data;
+        preset = {
+            medics: [
+                newPreset("Indikation", "reason", "Indikation...", "text"),
+                newPreset("Medikamentenname", "drug", "Medikamentenname...", "text", enums.drug),
+                newPreset("Dosierung", "dose", "z.B. 1 1/2 Tabletten, 3ml ...", "text"),
+                newPreset("Häufigkeit der Verabreichung", "frequency", "z.B. 2x täglich", "text"),
+                newPreset("Beobachtung / unerwünschte Wirkung", "problem", "Rötungen a.d. Pfoten, Erbrechen...", "textarea"),
+            ],
+        };
+    });
+
 function newPreset (label, name, placeholder, type, options){
-    let a = {
+    return {
         label: label,
         name: name,
         placeholder: placeholder,
-        type: type
+        type: type,
+        options: (options) ? options : null,
     };
-    if(options) a.options = options;
-    return a;
 }
 
 window.getForm = function(type){
