@@ -9,7 +9,7 @@ const isAuth = require('connect-ensure-login').ensureLoggedIn();
 
 const DATA = require('./dataService');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const indexPage = __dirname + '/public/index.html';
 const csvExportOptions = {
